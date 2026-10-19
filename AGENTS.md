@@ -52,3 +52,54 @@ Source code is authoritative; STEP and STL files are generated outputs.
 - Do not commit generated build artifacts by default.
 - Do not commit secrets, API keys or virtual environments.
 - Keep AGENTS.md and dependency configuration under version control.
+
+## Persistent Project Memory
+
+Before substantial planning, research, or implementation:
+
+1. Read `.opencode/MEMORY.md`.
+2. Check relevant source files and tests to confirm whether stored information remains accurate.
+3. Reuse existing verified decisions and avoid repeating failed approaches.
+4. Identify any conflicts between stored memory and the current code or user requirements. Current verified evidence takes precedence over stale memory.
+
+After completing substantial work:
+
+1. Identify durable facts, successful fixes, important decisions, new measurements, and unresolved problems worth preserving.
+2. Propose concise updates to `.opencode/MEMORY.md`.
+3. Include source URLs and confidence levels for researched measurements.
+4. Record test results only when the commands were actually executed and their results observed.
+5. Never record assumptions as confirmed facts.
+
+The planner must include proposed memory updates in its final report. The implementation agent must apply approved updates to the memory file after implementation and verification.
+
+## Collaboration Protocol
+
+Before substantial planning or implementation:
+
+1. Read `.opencode/AGENT_PROTOCOL.md` to understand workspace collaboration rules.
+2. Identify the active project and load project context.
+3. Follow established procedures for planning, implementation, and handoffs.
+4. Update project memory after meaningful progress.
+5. Review `.opencode/AGENT_PROTOCOL.md` for additional guidelines and procedures.
+
+The protocol provides essential rules for agent roles, project loading, planning handoff, implementation handoff, memory management, documentation requirements, new project creation, and workspace write boundaries.
+
+
+## Persistent Project Memory
+
+Before substantial planning, research, or implementation:
+
+1. Read `.opencode/MEMORY.md`.
+2. Check relevant source files and tests to confirm whether stored information remains accurate.
+3. Reuse existing verified decisions and avoid repeating failed approaches.
+4. Identify any conflicts between stored memory and the current code or user requirements. Current verified evidence takes precedence over stale memory.
+
+After completing substantial work:
+
+1. Identify durable facts, successful fixes, important decisions, new measurements, and unresolved problems worth preserving.
+2. Propose concise updates to `.opencode/MEMORY.md`.
+3. Include source URLs and confidence levels for researched measurements.
+4. Record test results only when the commands were actually executed and their results observed.
+5. Never record assumptions as confirmed facts.
+
+The planner must include proposed memory updates in its final report. The implementation agent must apply approved updates to the memory file after implementation and verification.
