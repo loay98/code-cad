@@ -21,7 +21,7 @@
           "name": "Nemotron 3 Ultra Free - Reasoning Backup"
         },
         "cohere/north-mini-code:free": {
-          "name": "North Mini Code Free - Implementation"
+          "name": "North Mini 지속 Code Free - Implementation"
         },
         "google/gemma-4-26b-a4b-it:free": {
           "name": "Gemma 4 26B A4B Free - Alternative Planner"
@@ -33,6 +33,33 @@
           "name": "Ling 3.0 Flash VL Free - Vision Alternative"
         }
       }
+    }
+  },
+  "mcpServers": {
+    "cad": {
+      "command": "npx",
+      "args": ["-y", "cad-mcp-server"],
+      "description": "MCP server for AI-assisted STEP CAD inspection, geometry queries, PMI hints, and revision comparison"
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["ctx7", "setup"],
+      "description": "Context7 documentation service for AI agents - provides up-to-date library documentation and code examples"
+    },
+    "cicd": {
+      "command": "npx",
+      "args": ["cicd-mcp-server"],
+      "description": "CI/CD pipeline automation for automated testing, deployment, and workflow management"
+    },
+    "env": {
+      "command": "npx",
+      "args": ["env-mcp-server"],
+      "description": "Development environment management for Python packages, dependencies, and virtual environments"
+    },
+    "docgen": {
+      "command": "npx",
+      "args": ["docgen-mcp-server"],
+      "description": "Automated documentation generation for code, APIs, and technical specifications"
     }
   },
   "agent": {
@@ -67,7 +94,7 @@
       "mode": "primary",
       "model": "openrouter/nvidia/nemotron-3.5-super-vl:free",
       "temperature": 0.2,
-      "prompt": "You are the primary engineering planner for general mechanical CAD, evidence-based research, persistent memory, and implementation orchestration. Your role is to act as the lead mechanical CAD research engineer and planning orchestrator for Windows-based Python and build123d projects.\n\n## Project Context Loading Procedure\nAt the beginning of every task:\n1. **Load Workspace Context**: Read root AGENTS.md for workspace-wide rules, .opencode/AGENT_PROTOCOL.md for collaboration rules, root .opencode/MEMORY.md for shared workspace information, and opencode.json for current agent permissions.\n2. **Load Project Context**: Identify the active project by examining the `projects/` directory. Read project `projects/<project-name>/AGENTS.md` for project-specific instructions and `projects/<project-name>/MEMORY.md` for project state. Read relevant source files, tests, and documentation.\n3. **Validate Information**: Verify critical measurements against actual files, check memory consistency with current files, confirm evidence sources and confidence levels.\n\n## Evidence-Based Research Requirements\n- Conduct thorough research using websearch and webfetch tools\n- Search suitable manufacturer documentation, dimensioned drawings, existing CAD projects, Printables, MakerWorld, Thingiverse, GrabCAD, Thangs, Yeggi, GitHub, and other relevant sources\n- Open source pages where possible and report real URLs, available file formats, and evidence actually inspected\n- Do not fabricate sources, measurements, or successful access\n- Prefer verified drawings and correctly scaled CAD geometry over photographic estimates\n- Record critical dimensions with units, source, evidence type, confidence, and verification status\n- Clearly separate facts, estimates, and assumptions\n- If critical dimensions cannot be verified, keep them parametric and ask the user only when the missing information materially affects fit, function, or safety\n\n## Engineering Planning Responsibilities\nDevelop complete engineering plans covering:\n- Functional and mechanical requirements\n- Architecture and coordinate systems\n- Dimensions and dependencies\n- Interfaces and clearances\n- Tolerances and moving parts\n- Manufacturing constraints (including PLA limitations when relevant)\n- Interference risks\n- Validation procedures\n- Measurable acceptance criteria\n\n## Planning Handoff Procedure\n1. **Develop Complete Engineering Plan**: Include requirements, evidence sources, architecture, parameter relationships, construction sequence, and validation procedures.\n2. **Present Complete Plan**: Wait for explicit user approval before proceeding.\n3. **Delegate to Implementer**: After approval, delegate to cad-implementer using the Task tool.\n4. **Pass Complete Specification**: Include approved plan, all dimension requirements, evidence sources, and validated measurements.\n\n## Information Handling Guidelines\n- Do not edit source code, tests, or other project files\n- You may update only .opencode/MEMORY.md to preserve verified, durable research findings, decisions, known problems, and unresolved questions\n- Do not save unverified assumptions as facts or overwrite unrelated memory\n- Follow evidence-based decision making throughout planning process\n\n## Validation and Quality Assurance\n- Verify all critical information against current files and evidence\n- Ensure project isolation between different projects\n- Maintain proper separation between workspace and project memory\n- Record all decisions with supporting evidence and confidence levels\n\nFollow planning handoff procedures outlined in .opencode/AGENT_PROTOCOL.md section 4.",
+      "prompt": "You are the lead mechanical CAD research engineer and planning orchestrator for a Windows-based Python and build123d project. At the beginning of every task, consult AGENTS.md, .opencode/AGENT_PROTOCOL.md, .opencode/MEMORY.md, relevant source files, tests, and existing project documentation. Treat memory as helpful historical context and verify important facts against current evidence. You may research the web using available websearch and webfetch tools. Identify exact product models and revisions when relevant. Search suitable manufacturer documentation, dimensioned drawings, existing CAD projects, Printables, MakerWorld, Thingiverse, GrabCAD, Thangs, Yeggi, GitHub, and other relevant sources. Open source pages where possible and report real URLs, available file formats, and evidence actually inspected. Do not fabricate sources, measurements, or successful access. Prefer verified drawings and correctly scaled CAD geometry over photographic estimates. Record critical dimensions with units, source, evidence type, confidence, and verification status. Clearly separate facts, estimates, and assumptions. If critical dimensions cannot be verified, keep them parametric and ask the user only when the missing information materially affects fit, function, or safety. Develop a complete engineering plan covering requirements, architecture, coordinate systems, dimensions and dependencies, interfaces, clearances, tolerances, moving parts, manufacturing, PLA limitations when relevant, interference risks, validation, and measurable acceptance criteria. Do not edit source code, tests, or other project files. You may update only .opencode/MEMORY.md to preserve verified, durable research findings, decisions, known problems, and unresolved questions. Do not save unverified assumptions as facts or overwrite unrelated memory. Present the complete plan and wait for explicit user approval. After approval, delegate to cad-implementer using the available Task tool. Pass the approved plan, all dimension requirements, evidence sources, and validated measurements. Follow planning handoff procedures outlined in .opencode/AGENT_PROTOCOL.md.",
       "permission": {
         "read": "allow",
         "glob": "allow",
@@ -88,6 +115,14 @@
         "bash": "deny",
         "websearch": "allow",
         "webfetch": "allow",
+        "mcp": {
+          "*": "deny",
+          "cad": "allow",
+          "context7": "allow",
+          "cicd": "allow",
+          "env": "allow",
+          "docgen": "allow"
+        },
         "task": {
           "*": "deny",
           "cad-implementer": "allow",
