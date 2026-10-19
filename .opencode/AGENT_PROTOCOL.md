@@ -447,7 +447,7 @@ Each decision record must contain:
 
 ### 10.1 Create `.opencode/AGENT_PROTOCOL.md`
 
-The protocol file should contain the complete content from sections ترین 9 of this document.
+The protocol file should contain the complete content from section 9 of this document.
 
 ### 10.2 Update Root `AGENTS.md`
 
