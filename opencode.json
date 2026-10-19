@@ -1,19 +1,128 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "openrouter/qwen/qwen3.8-27b:free",
-  "small_model": "openrouter/qwen/qwen3.8-27b:free",
+  "default_agent": "plan",
+  "model": "openrouter/cohere/north-mini-code:free",
+  "small_model": "openrouter/cohere/north-mini-code:free",
   "provider": {
     "openrouter": {
       "models": {
-        "qwen/qwen3.8-27b:free": {
-          "name": "1. Qwen3.8 27B Free"
-        },
-        "cohere/north-mini-code:free": {
-          "name": "2. North Mini Code Free"
+        "nvidia/nemotron-3.5-super-vl:free": {
+          "name": "Nemotron 3.5 Super VL Free - Main Vision Planner"
         },
         "nvidia/nemotron-3-ultra-550b-a55b:free": {
-          "name": "3. Nemotron 3 Ultra Free"
+          "name": "Nemotron 3 Ultra Free - Reasoning Backup"
+        },
+        "cohere/north-mini-code:free": {
+          "name": "North Mini Code Free - Implementation"
+        },
+        "google/gemma-4-26b-a4b-it:free": {
+          "name": "Gemma 4 26B A4B Free - Alternative Planner"
+        },
+        "google/gemma-4-31b-it:free": {
+          "name": "Gemma 4 31B Free - Alternative Planner"
+        },
+        "inclusionai/ling-3.0-flash-vl:free": {
+          "name": "Ling 3.0 Flash VL Free - Vision Alternative"
         }
+      }
+    }
+  },
+  "agent": {
+    "build": {
+      "description": "Implements parametric CAD models using build123d, edits project files, runs tests, and fixes errors.",
+      "mode": "primary",
+      "model": "openrouter/cohere/north-mini-code:free",
+      "prompt": "You are the implementation agent for a Windows-based build123d CAD project. Follow AGENTS.md and existing project conventions. Inspect existing code before editing. Implement the approved engineering plan using parametric dimensions and preserve mechanical clearances. Do not invent missing critical measurements. Validate geometry, run pytest and Ruff, and export STEP/STL when requested. Never claim tests or exports succeeded unless verified. Report modified files, actual test results, export paths, and remaining limitations.",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "edit": "allow",
+        "bash": "ask",
+        "task": "deny"
+      }
+    },
+    "plan": {
+      "description": "Default engineering planner for mechanical CAD design, visual analysis, and implementation orchestration.",
+      "mode": "primary",
+      "model": "openrouter/nvidia/nemotron-3.5-super-vl:free",
+      "temperature": 0.2,
+      "prompt": "You are the main engineering planner and orchestrator for a Windows-based parametric build123d CAD project. Follow AGENTS.md. Analyze user requirements, existing project context, and supplied images. Do not edit project files or execute shell commands. Produce a self-contained engineering brief covering coordinate systems, dimensions, constraints, part breakdown, parametric relationships, clearances, tolerances, print orientation, interference risks, assembly interfaces, validation tests, and measurable acceptance criteria. Distinguish confirmed measurements from assumptions and ask about missing critical dimensions. Present the plan and wait for explicit user approval before implementation. After approval, invoke cad-implementer using the Task tool. Pass the complete approved plan, dimensions, constraints, acceptance criteria, and relevant project context. Review the implementation report and request focused corrections if needed. Report actual test results and remaining risks. If the Task tool is unavailable or delegation fails, explain the limitation instead of claiming a handoff occurred.",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "edit": "deny",
+        "bash": "deny",
+        "task": {
+          "*": "deny",
+          "cad-implementer": "allow"
+        }
+      }
+    },
+    "cad-planner-backup": {
+      "description": "Alternative text-based reasoning planner using Nemotron 3 Ultra.",
+      "mode": "primary",
+      "model": "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free",
+      "temperature": 0.2,
+      "prompt": "Review mechanical CAD requirements and the existing engineering plan. Identify missing dimensions, geometric inconsistencies, tolerance problems, assembly risks, and measurable acceptance criteria. Do not edit project files or execute shell commands. Clearly distinguish facts from assumptions. If image interpretation is necessary, state that limitation.",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "edit": "deny",
+        "bash": "deny",
+        "task": "deny"
+      }
+    },
+    "cad-vision-alternative": {
+      "description": "Alternative visual CAD planner using Ling 3.0 Flash VL.",
+      "mode": "primary",
+      "model": "openrouter/inclusionai/ling-3.0-flash-vl:free",
+      "temperature": 0.2,
+      "prompt": "Analyze supplied CAD screenshots and mechanical requirements. Produce a structured engineering plan for a separate build123d implementation agent. Do not modify files. Distinguish visible evidence from assumptions and identify measurements requiring confirmation.",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "edit": "deny",
+        "bash": "deny",
+        "task": "deny"
+      }
+    },
+    "cad-gemma-backup": {
+      "description": "Alternative planner using Gemma 4 26B A4B Free.",
+      "mode": "primary",
+      "model": "openrouter/google/gemma-4-26b-a4b-it:free",
+      "temperature": 0.2,
+      "prompt": "Analyze mechanical CAD requirements and supplied images. Produce an engineering plan identifying dimensions, constraints, tolerances, assembly interfaces, risks, and measurable acceptance criteria. Do not edit files. Label assumptions and missing information.",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "edit": "deny",
+        "bash": "deny",
+        "task": "deny"
+      }
+    },
+    "cad-implementer": {
+      "description": "Implementation subagent for approved build123d CAD designs, geometry validation, testing, and exports.",
+      "mode": "subagent",
+      "model": "openrouter/cohere/north-mini-code:free",
+      "prompt": "You are the implementation specialist for a Windows build123d CAD project. Read AGENTS.md and inspect existing files before editing. Implement the approved engineering plan provided by the parent agent. Use parametric dimensions, preserve clearances, and do not invent missing critical measurements. Validate geometry and run pytest and Ruff. Export STEP and STL when requested. Shell commands require user approval under the configured permissions. Report changed files, commands actually run, test results, export paths, and unresolved risks. Do not claim success without verification.",
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "edit": "allow",
+        "bash": "ask",
+        "task": "deny"
       }
     }
   }
