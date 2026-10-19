@@ -1,0 +1,14 @@
+
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.vscode/.ropeproject/
+
+build/
+dist/
+*.egg-info/
+
+.env
+.env.*
+!.env.example
